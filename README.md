@@ -1,11 +1,11 @@
 This is a concurrent version of dump, a simple database here: https://github.com/BumblebeeBat/dump
 
-This program is supposed to be faster, but as you can see below, it is about 30% slower.
+This program is about 20% faster than the non-concurrent one. It could be updated to use multiple hard drives, or multiple computers connected over a network, and then it would be much faster.
 
 ```
-2> timer:tc(test_cdump, test, []).
-{10380711,success} % this is about 10 seconds.
-3> timer:tc(test_dump, test, []).
-{7587552,success}  % this is about 7.5 seconds.
-4>
+1> timer:tc(test_cdump, test, [16]).
+{4224897,success}
+2> timer:tc(test_dump, test, []).
+{5312891,success}
+3> 
 ```
