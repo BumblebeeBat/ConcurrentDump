@@ -2,8 +2,6 @@
 -export([test/0,test2/0]).
 %timer:tc(test_cdump, test, []).
 %{6353978,success}
-
-
 test() ->
     ID = kv3,
     Size = 100,
@@ -28,8 +26,6 @@ test_times(0, _, _) -> success;
 test_times(N, Size, ID) -> 
     cdump:put(<<0:(8*Size)>>, ID),
     test_times(N-1, Size, ID).
-
-
 test2() ->
     cprof:start(),
     test(),

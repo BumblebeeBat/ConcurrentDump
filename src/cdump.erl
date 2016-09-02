@@ -17,17 +17,12 @@ handle_cast(_, X) -> {noreply, X}.
 handle_call({write, Data}, _From, {Word, Threads, ID, IDS}) -> 
     Word = size(Data),
     Top = dump_bits:top(ID),
-    %N = Top rem Word + 1,
-    %IDN = element(N, IDS),
-    %Div = Top div Word, 
     {IDN, Div} = get_id(Top, Threads, IDS),
-    %{Div, IDN} = make_id(ID, Top, Threads),
     file_manager:write(IDN, Div, Data),
     dump_bits:write(ID),
     {reply, Top, {Word, Threads, ID, IDS}};
 handle_call({read, Location, ID}, _From, {Word, Threads, ID, IDS}) -> 
     {IDN, Div} = get_id(Location, Threads, IDS),
-    %{Div, IDN} = make_id(ID, Location, Threads),
     Z = case file_manager:read(IDN, Div, Word) of
 	    {ok, A} -> 
 		A;
@@ -43,15 +38,12 @@ sizes(_, -1, _) -> 0;
 sizes(IDS, N, Threads) -> 
     {IDN, _} = get_id(N, Threads, IDS),
     file_manager:size(IDN) + sizes(IDS, N-1, Threads).
-    
-
 delete(X,ID) -> gen_server:cast({global, ID}, {delete, X, ID}).
 put(Data, ID) -> 
     gen_server:call({global, ID}, {write, Data}).
 get(X, ID) -> gen_server:call({global, ID}, {read, X, ID}).
 word(ID) -> gen_server:call({global, ID}, word).
 highest(ID) -> gen_server:call({global, ID}, {highest, ID}).
-
 make_ids(ID, Threads) -> 
     list_to_tuple(make_ids(ID, Threads-1, Threads)).
 make_ids(_ID, -1, _Threads) -> [];
@@ -63,7 +55,7 @@ make_id(ID, Location, Threads) ->
     Rem = TR rem Threads,
     Div = TR div Threads,
     S = atom_to_list(ID),
-    S2 = S ++ "_" ++ integer_to_list(Rem),% ++ "_file",
+    S2 = S ++ "_" ++ integer_to_list(Rem),
     {Div, list_to_atom(S2)}.
 get_id(Location, Threads, IDS) ->
     N = Location rem Threads,
